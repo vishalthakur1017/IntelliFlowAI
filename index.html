@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IntelliFlow – Smart Workspace</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon"><i class="bi bi-layers-half"></i></div>
+    IntelliFlow
+  </div>
+  <div class="d-flex align-items-center gap-3">
+    <span class="header-badge">v1.0.0</span>
+    <div class="d-flex align-items-center gap-2" style="font-size:13px; color:var(--text-muted); font-weight:500;">
+      <div class="status-dot"></div>
+      <span id="server-status">Connecting...</span>
+    </div>
+  </div>
+</header>
+
+<!-- NAVIGATION BAR -->
+<nav class="app-nav">
+  <div class="nav-item active" onclick="switchTab('tab-dashboard')" id="nav-dashboard">
+    <i class="bi bi-grid-1x2"></i> Dashboard
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-aip')" id="nav-aip">
+    <i class="bi bi-kanban"></i> Task Board (AIP)
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-ml')" id="nav-ml">
+    <i class="bi bi-cpu"></i> ML Priority
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-dsa')" id="nav-dsa">
+    <i class="bi bi-memory"></i> LRU Cache (DSA)
+  </div>
+  <div class="nav-item" onclick="switchTab('tab-genai')" id="nav-genai">
+    <i class="bi bi-stars"></i> Gen AI
+  </div>
+</nav>
+
+<main class="app-container">
+
+  <!-- DASHBOARD SECTION -->
+  <section id="tab-dashboard" class="tab-section active">
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-label">Total Tasks</div>
+        <div class="stat-value" id="stat-tasks">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">High Priority</div>
+        <div class="stat-value" id="stat-high" style="color:var(--danger)">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Workflows Run</div>
+        <div class="stat-value" id="stat-workflows" style="color:var(--primary)">0</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">ML Predictions</div>
+        <div class="stat-value" id="stat-predictions" style="color:var(--success)">0</div>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+      <div class="col-md-6 col-lg-3">
+        <div class="dash-card" onclick="switchTab('tab-aip')">
+          <div class="dash-icon" style="background:#EFF6FF; color:#2563EB"><i class="bi bi-kanban"></i></div>
+          <div class="dash-title">Task Board</div>
+          <div class="dash-desc">Manage Advanced Internet Programming workflows.</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="dash-card" onclick="switchTab('tab-ml')">
+          <div class="dash-icon" style="background:#FAF5FF; color:#9333EA"><i class="bi bi-cpu"></i></div>
+          <div class="dash-title">ML Priority</div>
+          <div class="dash-desc">Predict task severity using Machine Learning.</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="dash-card" onclick="switchTab('tab-dsa')">
+          <div class="dash-icon" style="background:#FEF2F2; color:#EF4444"><i class="bi bi-memory"></i></div>
+          <div class="dash-title">LRU Cache</div>
+          <div class="dash-desc">Interactive C++ DSA algorithms.</div>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="dash-card" onclick="switchTab('tab-genai')">
+          <div class="dash-icon" style="background:#ECFDF5; color:#10B981"><i class="bi bi-stars"></i></div>
+          <div class="dash-title">Gen AI</div>
+          <div class="dash-desc">Automated workflow generation and suggestions.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AIP SECTION -->
+  <section id="tab-aip" class="tab-section">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="section-title"><i class="bi bi-plus-circle"></i> Add Task</div>
+        <div class="panel mb-4">
+          <div class="panel-header">
+            <div class="panel-icon blue"><i class="bi bi-ui-checks"></i></div>
+            <div>
+              <div class="panel-title">New Task</div>
+              <div class="panel-subtitle">Create a task for your workflow</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Task Title</label>
+            <input type="text" id="task-title" class="form-control" placeholder="e.g., Update user schema" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea id="task-desc" class="form-control" rows="2" placeholder="Add some details..."></textarea>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label">Priority</label>
+              <select id="task-priority" class="form-select">
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label">Status</label>
+              <select id="task-status" class="form-select">
+                <option value="pending">Pending</option>
+                <option value="in-progress">In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div id="task-add-alert" class="alert-ai"></div>
+          <button class="btn-ai w-100" onclick="addTask()">
+            <i class="bi bi-plus-lg"></i> Create Task
+          </button>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="section-title"><i class="bi bi-list-task"></i> Task Board</div>
+        <div class="panel" style="min-height: 400px;">
+          <div class="panel-header">
+            <div class="panel-icon green"><i class="bi bi-kanban"></i></div>
+            <div>
+              <div class="panel-title">Active Tasks</div>
+              <div class="panel-subtitle" id="task-count-label">0 tasks loaded</div>
+            </div>
+            <button class="btn-outline-ai ms-auto" onclick="loadTasks()" style="padding:8px 12px;">
+              <i class="bi bi-arrow-clockwise"></i>
+            </button>
+          </div>
+          <div id="task-list">
+            <div class="output-empty">
+              <i class="bi bi-inbox"></i>
+              <p>All caught up!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ML SECTION -->
+  <section id="tab-ml" class="tab-section">
+    <div class="row">
+      <div class="col-lg-6 mx-auto">
+        <div class="section-title"><i class="bi bi-cpu"></i> Machine Learning</div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-icon purple"><i class="bi bi-graph-up-arrow"></i></div>
+            <div>
+              <div class="panel-title">Predict Priority</div>
+              <div class="panel-subtitle">Smart task prioritization</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Task Context</label>
+            <textarea id="ml-input" class="form-control" rows="3" placeholder="Paste the issue or task details here..."></textarea>
+          </div>
+          <button class="btn-outline-ai w-100 mb-3" onclick="predictPriority()">
+            <div class="loading-spinner" id="ml-spinner"></div>
+            <i class="bi bi-lightning-charge" id="ml-icon"></i>
+            Predict Priority
+          </button>
+          <div class="output-box" id="ml-output">
+            <div class="output-empty">
+              <i class="bi bi-robot"></i>
+              <p>Awaiting input</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DSA SECTION -->
+  <section id="tab-dsa" class="tab-section">
+    <div class="row">
+      <div class="col-lg-6 mx-auto">
+        <div class="section-title mt-4"><i class="bi bi-memory"></i> LRU Cache (C++)</div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-icon red"><i class="bi bi-cpu"></i></div>
+            <div>
+              <div class="panel-title">Cache Operations</div>
+              <div class="panel-subtitle">Capacity: 4 items (Auto-evicts LRU)</div>
+            </div>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label">Key</label>
+              <input type="text" id="lru-key" class="form-control" placeholder="e.g. A" maxlength="4" />
+            </div>
+            <div class="col-6">
+              <label class="form-label">Value</label>
+              <input type="text" id="lru-val" class="form-control" placeholder="e.g. 100" />
+            </div>
+          </div>
+          <div class="d-flex gap-2 mb-4">
+            <button class="btn-green flex-fill" onclick="lruPut()">
+              <i class="bi bi-box-arrow-in-down"></i> PUT
+            </button>
+            <button class="btn-outline-ai flex-fill" onclick="lruGet()">
+              <i class="bi bi-search"></i> GET
+            </button>
+            <button class="btn-danger-outline" onclick="lruReset()" title="Reset Cache" style="width: 44px; display:flex; align-items:center; justify-content:center;">
+              <i class="bi bi-arrow-counterclockwise"></i>
+            </button>
+          </div>
+          <div class="output-box" id="lru-output" style="min-height: 180px; display: flex; flex-direction: column; justify-content: center; position: relative; background: #fafafa; overflow: hidden;">
+            <div class="cache-status" id="lru-status">Awaiting operations...</div>
+            <div class="output-empty" id="lru-empty">
+              <i class="bi bi-memory"></i>
+              <p>Cache is empty</p>
+            </div>
+            <div class="cache-container" id="lru-container" style="display: none;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENAI SECTION -->
+  <section id="tab-genai" class="tab-section">
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="section-title"><i class="bi bi-stars"></i> Generative AI</div>
+        <div class="panel mb-4">
+          <div class="panel-header">
+            <div class="panel-icon purple"><i class="bi bi-magic"></i></div>
+            <div>
+              <div class="panel-title">Generate Workflow</div>
+              <div class="panel-subtitle">AI-assisted structural planning</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Project Instructions</label>
+            <textarea id="gen-prompt" class="form-control" rows="3" placeholder="Describe what you want to build..."></textarea>
+          </div>
+          <button class="btn-ai w-100 mb-3" onclick="generateWorkflow()">
+            <div class="loading-spinner" id="gen-spinner"></div>
+            <i class="bi bi-stars" id="gen-icon"></i>
+            Generate Work Steps
+          </button>
+          <div class="output-box" id="gen-output">
+            <div class="output-empty">
+              <i class="bi bi-lightbulb"></i>
+              <p>Wait for AI magic</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="section-title mt-lg-0 mt-4"><i class="bi bi-chat-right-text"></i> Smart Suggestions</div>
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-icon blue"><i class="bi bi-collection"></i></div>
+            <div>
+              <div class="panel-title">Smart Suggestions</div>
+              <div class="panel-subtitle">Deconstruct large goals</div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Overall Goal</label>
+            <input type="text" id="suggest-goal" class="form-control" placeholder="e.g., Launch mobile app v1.0" />
+          </div>
+          <button class="btn-outline-ai w-100 mb-3" onclick="suggestTasks()">
+            <div class="loading-spinner" id="suggest-spinner"></div>
+            <i class="bi bi-list-check" id="suggest-icon"></i>
+            Get Suggestions
+          </button>
+          <div id="suggest-output">
+            <div class="output-empty output-box">
+              <i class="bi bi-collection"></i>
+              <p>Suggestions pending</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    document.getElementById('nav-' + tabId.replace('tab-', '')).classList.add('active');
+  }
+
+const API = 'http://localhost:5000/api';
+let stats = { tasks: 0, high: 0, workflows: 0, predictions: 0 };
+
+let lruCache = new Map();
+const LRU_CAPACITY = 4;
+let lruAnimTimeout = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkHealth();
+  loadTasks();
+});
+
+async function checkHealth() {
+  try {
+    const r = await fetch(`${API}/health`);
+    if (r.ok) {
+      document.getElementById('server-status').textContent = 'System Online';
+    }
+  } catch {
+    document.getElementById('server-status').textContent = 'System Offline';
+    document.querySelector('.status-dot').style.background = 'var(--danger)';
+  }
+}
+
+async function addTask() {
+  const title    = document.getElementById('task-title').value.trim();
+  const desc     = document.getElementById('task-desc').value.trim();
+  const priority = document.getElementById('task-priority').value;
+  const status   = document.getElementById('task-status').value;
+  const alert    = document.getElementById('task-add-alert');
+
+  if (!title) { showAlert(alert, 'Task title is required.', false); return; }
+
+  try {
+    const res = await fetch(`${API}/tasks`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description: desc, priority, status })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showAlert(alert, 'Task added successfully!', true);
+      document.getElementById('task-title').value = '';
+      document.getElementById('task-desc').value  = '';
+      loadTasks();
+    } else {
+      showAlert(alert, data.error || 'Failed to add task.', false);
+    }
+  } catch (e) {
+    showAlert(alert, 'Could not connect to server.', false);
+  }
+}
+
+async function loadTasks() {
+  try {
+    const res  = await fetch(`${API}/tasks`);
+    const data = await res.json();
+    if (!data.success) return;
+
+    const tasks = data.tasks;
+    stats.tasks = tasks.length;
+    stats.high  = tasks.filter(t => t.priority === 'High').length;
+    updateStats();
+
+    document.getElementById('task-count-label').textContent = `${tasks.length} tasks open`;
+    const container = document.getElementById('task-list');
+
+    if (!tasks.length) {
+      container.innerHTML = `<div class="output-empty"><i class="bi bi-inbox"></i><p>All caught up!</p></div>`;
+      return;
+    }
+
+    container.innerHTML = tasks.map(t => `
+      <div class="task-card">
+        <div class="task-info">
+          <div class="task-title">${escHtml(t.title)}</div>
+          ${t.description ? `<div class="task-desc">${escHtml(t.description)}</div>` : ''}
+          <div class="d-flex gap-2 align-items-center">
+            <span class="badge-priority badge-${(t.priority||'medium').toLowerCase()}">${t.priority || 'Medium'}</span>
+            <span class="badge-status">${t.status || 'pending'}</span>
+          </div>
+        </div>
+        <button class="btn-danger-outline" onclick="deleteTask('${t._id}')" title="Delete Task">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    `).join('');
+  } catch (e) {}
+}
+
+async function deleteTask(id) {
+  try { await fetch(`${API}/tasks/${id}`, { method: 'DELETE' }); loadTasks(); } catch {}
+}
+
+async function predictPriority() {
+  const desc = document.getElementById('ml-input').value.trim();
+  if (!desc) return;
+  setLoading('ml', true);
+
+  try {
+    const res  = await fetch(`${API}/ml/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ description: desc })
+    });
+    const data = await res.json();
+    stats.predictions++; updateStats();
+
+    const p = data.priority || 'Medium';
+    const conf = data.confidence || {};
+    const pct = conf[p] ? Math.round(conf[p] * 100) : 85;
+    const color = p === 'High' ? 'var(--danger)' : p === 'Low' ? 'var(--success)' : 'var(--warning)';
+
+    document.getElementById('ml-output').innerHTML = `
+      <div class="priority-result">
+        <div class="priority-big" style="color:${color}">${p}</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:1rem;">Priority prediction (${pct}% confident)</div>
+        ${Object.entries(conf).map(([label, val]) => {
+          let col = label === 'High' ? 'var(--danger)' : label === 'Low' ? 'var(--success)' : 'var(--warning)';
+          return `
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span style="font-size:12px; width:50px; text-align:right">${label}</span>
+              <div class="confidence-bar" style="flex:1">
+                <div class="confidence-fill" style="width:${Math.round(val*100)}%; background:${col}"></div>
+              </div>
+              <span style="font-size:12px; color:var(--text-muted); width:35px">${Math.round(val*100)}%</span>
+            </div>
+          `;
+        }).join('')}
+      </div>`;
+  } catch (e) {
+    document.getElementById('ml-output').innerHTML = `<div style="color:var(--danger); padding:1rem">Error: ${e.message}</div>`;
+  } finally { setLoading('ml', false); }
+}
+
+async function generateWorkflow() {
+  const prompt = document.getElementById('gen-prompt').value.trim();
+  if (!prompt) return;
+  setLoading('gen', true);
+  
+  try {
+    const res  = await fetch(`${API}/workflow/generate`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+    stats.workflows++; updateStats();
+
+    document.getElementById('gen-output').innerHTML = data.steps.map((step, i) => `
+      <div class="workflow-step">
+        <div class="step-num">${i+1}</div>
+        <div class="step-text">${escHtml(typeof step === 'string' ? step : JSON.stringify(step))}</div>
+      </div>
+    `).join('');
+  } catch (e) {
+    document.getElementById('gen-output').innerHTML = `<div style="color:var(--danger)">Error: ${e.message}</div>`;
+  } finally { setLoading('gen', false); }
+}
+
+async function suggestTasks() {
+  const goal = document.getElementById('suggest-goal').value.trim();
+  if (!goal) return;
+  setLoading('suggest', true);
+
+  try {
+    const res  = await fetch(`${API}/workflow/suggest`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ goal })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error);
+
+    document.getElementById('suggest-output').innerHTML = data.tasks.map((t, i) => {
+      const title = t.title || (typeof t === 'string' ? t : 'Task');
+      const prio  = t.priority || 'Medium';
+      return `
+        <div class="suggested-task">
+          <div>
+            <div class="suggested-task-title">${escHtml(title)}</div>
+            ${t.description ? `<div class="suggested-task-desc">${escHtml(t.description)}</div>` : ''}
+          </div>
+          <button class="btn-outline-ai" style="padding:6px 12px; font-size:12px;" onclick="addSuggestedTask('${escAttr(title)}', '${escAttr(t.description||'')}', '${prio}')">Add</button>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    document.getElementById('suggest-output').innerHTML = `<div style="color:var(--danger)">Error: ${e.message}</div>`;
+  } finally { setLoading('suggest', false); }
+}
+
+async function addSuggestedTask(title, description, priority) {
+  try {
+    await fetch(`${API}/tasks`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, description, priority }) });
+    loadTasks();
+  } catch {}
+}
+
+function lruReset() {
+  lruCache.clear();
+  updateLRUUI("Cache cleared", "");
+}
+
+function lruPut() {
+  const key = document.getElementById('lru-key').value.trim().toUpperCase();
+  const val = document.getElementById('lru-val').value.trim();
+  if (!key) return;
+
+  stats.workflows++; updateStats();
+  
+  let msg = `<span class="hit-text">Inserted <b>${key}</b></span>`;
+  let subMsg = "";
+
+  if (lruCache.has(key)) {
+    // Update and make recent
+    lruCache.delete(key);
+    msg = `<span class="hit-text">Updated <b>${key}</b></span> (Hit)`;
+  } else if (lruCache.size >= LRU_CAPACITY) {
+    // Evict oldest (first item in Map)
+    const oldestKey = lruCache.keys().next().value;
+    lruCache.delete(oldestKey);
+    subMsg = `<span class="evict-text">Evicted <b>${oldestKey}</b></span>`;
+  }
+
+  lruCache.set(key, val || 'null');
+  updateLRUUI(msg, subMsg, key);
+}
+
+function lruGet() {
+  const key = document.getElementById('lru-key').value.trim().toUpperCase();
+  if (!key) return;
+
+  stats.workflows++; updateStats();
+
+  let msg = "";
+  if (lruCache.has(key)) {
+    const val = lruCache.get(key);
+    // Move to most recent
+    lruCache.delete(key);
+    lruCache.set(key, val);
+    msg = `<span class="hit-text">Cache Hit: <b>${key}</b> → ${val}</span>`;
+  } else {
+    msg = `<span class="miss-text">Cache Miss: <b>${key}</b> not found</span>`;
+  }
+  updateLRUUI(msg, "", key);
+}
+
+function updateLRUUI(statusHtml, subStatusHtml = "", highlightKey = "") {
+  document.getElementById('lru-status').innerHTML = statusHtml + (subStatusHtml ? ` <span style="font-size:11px; margin-left:8px;">${subStatusHtml}</span>` : '');
+  
+  const emptyEl = document.getElementById('lru-empty');
+  const container = document.getElementById('lru-container');
+  
+  if (lruCache.size === 0) {
+    emptyEl.style.display = 'flex';
+    container.style.display = 'none';
+    return;
+  }
+  
+  emptyEl.style.display = 'none';
+  container.style.display = 'flex';
+  
+  // Render cache blocks (reverse order to show most recent on the right)
+  const entries = Array.from(lruCache.entries());
+  
+  // First render with 'entering' class for new items
+  container.innerHTML = entries.map(([k, v], idx) => {
+    const isRecent = (k === highlightKey);
+    // Calculate if it's the most recently used (last in Map)
+    const rank = LRU_CAPACITY - (entries.length - idx) + 1; 
+    let label = idx === entries.length - 1 ? 'MRU' : (idx === 0 && entries.length === LRU_CAPACITY ? 'LRU' : `P${idx+1}`);
+
+    return `
+      <div class="cache-block ${isRecent ? 'entering' : ''}" id="cache-node-${k}">
+        <div class="cb-key">${k}</div>
+        <div class="cb-val">${v}</div>
+        <div class="cb-index">${label}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Trigger browser reflow
+  void container.offsetWidth;
+
+  // Add final classes for animation
+  entries.forEach(([k]) => {
+    const el = document.getElementById(`cache-node-${k}`);
+    if (el) {
+      if (k === highlightKey) {
+        el.classList.remove('entering');
+        el.classList.add('recent');
+        setTimeout(() => el.classList.remove('recent'), 800);
+      }
+    }
+  });
+}
+
+function updateStats() {
+  document.getElementById('stat-tasks').textContent = stats.tasks;
+  document.getElementById('stat-high').textContent = stats.high;
+  document.getElementById('stat-workflows').textContent = stats.workflows;
+  document.getElementById('stat-predictions').textContent = stats.predictions;
+}
+
+function setLoading(id, loading) {
+  const spinner = document.getElementById(`${id}-spinner`);
+  const icon = document.getElementById(`${id}-icon`);
+  if (spinner) spinner.style.display = loading ? 'block' : 'none';
+  if (icon) icon.style.display = loading ? 'none' : 'inline';
+}
+
+function showAlert(el, msg, success) {
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.background = success ? '#ECFDF5' : '#FEF2F2';
+  el.style.borderColor = success ? '#A7F3D0' : '#FECACA';
+  el.style.color = success ? '#065F46' : '#991B1B';
+  setTimeout(() => el.style.display = 'none', 3000);
+}
+
+function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escAttr(str) { return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"'); }
+</script>
+</body>
+</html>
